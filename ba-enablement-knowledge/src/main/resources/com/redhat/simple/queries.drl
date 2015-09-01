@@ -7,3 +7,16 @@ query "Get Business"
 	$business : Business()
 	
 end
+
+query "getresponseCode"
+
+	$responseCode : String()
+	
+end
+
+
+query "getReasons"
+
+	$reason : Reason()
+
+end

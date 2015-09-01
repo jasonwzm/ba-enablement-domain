@@ -1,0 +1,135 @@
+package com.redhat.simple;
+
+import com.redhat.Business;
+import com.redhat.RuleResponse;
+import com.redhat.Reason;
+
+rule "filter out Kansas"
+ruleflow-group "filter"
+dialect "mvel"
+	
+	when
+		$business: Business(stateCode == "KS");
+	then
+		insert(new String("filtered"))
+		Reason reason = new Reason()
+		reason.setReasonMessage("business filtered from Kansas")
+		insert(reason)
+end
+
+rule "validate fields - name"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(name == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("name is required")
+		insert(reason)
+
+end
+
+rule "validate fields - addline1"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(addressLine1 == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("addressline1 is required")
+		insert(reason)
+
+end
+
+rule "validate fields - addline2"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(addressLine2 == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("addressline2 is required")
+		insert(reason)
+
+end
+
+rule "validate fields - phonenumber"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(phoneNumber == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("phonenumber is required")
+		insert(reason)
+
+end
+
+rule "validate fields - city"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(city == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("city is required")
+		insert(reason)
+
+end
+
+rule "validate fields - statecode"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(stateCode == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("statecode is required")
+		insert(reason)
+
+end
+
+rule "validate fields - zipcode"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(zipCode == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("zipcode is required")
+		insert(reason)
+
+end
+
+rule "validate fields - federalTaxId"
+ruleflow-group "validation"
+dialect "mvel"
+	
+	when
+		$business: Business(federalTaxId == null);
+	then
+		Reason reason = new Reason()
+		reason.setReasonMessage("federalTaxId is required")
+		insert(reason)
+
+end
+
+rule "enrichment rule"
+ruleflow-group "enrichment"
+dialect "mvel"
+no-loop true
+
+	when
+		$business: Business($tax : federalTaxId != null, $zip : zipCode != null);
+	then
+		$business.setFederalTaxId($tax + "-" + $zip)
+		 //modify($business) {
+			//federalTaxId = $tax + "-" + $zip }
+end

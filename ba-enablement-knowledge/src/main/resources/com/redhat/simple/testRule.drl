@@ -9,3 +9,5 @@ dialect "mvel"
 	then
 		System.out.println( "hello from business central" );
 end
+
+		
